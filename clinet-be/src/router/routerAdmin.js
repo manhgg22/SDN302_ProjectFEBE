@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Question = require("../model/Question");
 const User = require("../model/userBE");
+
 const Exam = require("../model/Exam");
 const Result = require("../model/Result");
 const { verifyToken, checkRole } = require("../middleware/auth");
@@ -28,6 +29,30 @@ router.get("/questions", async (req, res) => {
  * @route POST /admin/questions
  * @desc Tạo câu hỏi mới
  */
+router.patch("/user/:id", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!["active", "inactive"].includes(status)) {
+      return res.status(400).json({ message: "Trạng thái không hợp lệ" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    res.status(200).json({ message: "✅ Đã cập nhật trạng thái", user });
+  } catch (err) {
+    console.error("❌ Lỗi cập nhật trạng thái:", err);
+    res.status(500).json({ message: "Lỗi server", error: err.message });
+  }
+});
 router.post("/questions", async (req, res) => {
   try {
     const { content, options, correctAnswer, explanation, subject, level } = req.body;
@@ -62,14 +87,28 @@ router.post("/questions", async (req, res) => {
  * @route GET /admin/accounts
  * @desc Lấy danh sách tài khoản (Chỉ admin)
  */
-router.get("/accounts", verifyToken, checkRole("admin"), async (req, res) => {
+// routes/admin.js
+
+
+
+
+/**
+ * @route GET /admin/user
+ * @desc Lấy danh sách tất cả người dùng (cả user và admin)
+ */
+router.get("/user", verifyToken, checkRole("admin"), async (req, res) => {
   try {
-    const accounts = await User.find().select("-password");
-    res.status(200).json(accounts);
+    const users = await User.find({ role: "user" }).select("-password");
+    res.status(200).json(users);
   } catch (err) {
-    res.status(500).json({ message: "Lỗi khi lấy danh sách tài khoản" });
+    console.error("❌ Lỗi lấy danh sách user:", err); // 👈 LOG CHI TIẾT LỖI
+    res.status(500).json({ message: "Lỗi khi lấy danh sách người dùng", error: err.message });
   }
 });
+
+
+module.exports = router;
+
 
 
 /**

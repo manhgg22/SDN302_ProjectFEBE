@@ -7,7 +7,7 @@ const AdminUsers = () => {
   // Gọi API để lấy danh sách user
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:9999/admin/accounts", {
+      const res = await axios.get("http://localhost:9999/admin/user", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"), // nếu bạn dùng token
         }
@@ -26,15 +26,13 @@ const AdminUsers = () => {
   const toggleStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === "active" ? "inactive" : "active";
     try {
-      await axios.patch(
-        `http://localhost:9999/admin/user/${id}/status`,
-        { status: nextStatus },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token")
-          }
-        }
-      );
+      await axios.patch(`http://localhost:9999/admin/user/${id}`, { status: nextStatus }, {
+  headers: {
+    Authorization: "Bearer " + localStorage.getItem("token")
+  }
+}); 
+      console.log(`Đã cập nhật trạng thái của người dùng ${id} thành ${nextStatus}`);
+
       setUsers((prev) =>
         prev.map((u) =>
           u._id === id ? { ...u, status: nextStatus } : u

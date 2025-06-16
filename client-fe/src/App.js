@@ -22,9 +22,9 @@ function App() {
       {/* ❌ Không nằm trong layout */}
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<LandingPage />} />
-      <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+      {/* <Route element={<RequireAuth allowedRoles={["admin"]} />}>
         <Route path="/admin" element={<AdminDashboard />} />
-      </Route>
+      </Route> */}
       <Route element={<RequireAuth allowedRoles={["user"]} />}>
         <Route path="/user" element={<UserDashboard />} />
       </Route>
@@ -35,6 +35,7 @@ function App() {
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/questions" element={<CreateQuestion />} />
         <Route path="/admin/results" element={<AdminResults />} />
+         <Route path="/admin" element={<AdminDashboard />} />
 
         <Route path="/user/quiz" element={<EnterExamCode />} />
         <Route path="/user/quiz/:examId" element={<TakeExam />} />

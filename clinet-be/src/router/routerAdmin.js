@@ -77,6 +77,57 @@ router.post("/questions", async (req, res) => {
     res.status(500).json({ message: "Lỗi tạo câu hỏi", error: err.message });
   }
 });
+/**
+ * @route GET /admin/questions/random?count=5
+ * @desc Trả về ngẫu nhiên X câu hỏi
+ */
+router.get("/questions/random", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 5;
+
+    const questions = await Question.aggregate([
+      { $sample: { size: count } } // Random count câu hỏi
+    ]);
+
+    res.status(200).json(questions);
+  } catch (err) {
+    console.error("❌ Lỗi random câu hỏi:", err.message);
+    res.status(500).json({ message: "Lỗi server", error: err.message });
+  }
+});
+/**
+ * @route POST /admin/tests
+ */
+router.post("/tests", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const { title, description, code, duration, questionIds } = req.body;
+
+    if (!title || !code || !Array.isArray(questionIds) || questionIds.length === 0) {
+      return res.status(400).json({ message: "Thiếu dữ liệu hoặc sai định dạng" });
+    }
+
+    const examExists = await Exam.findOne({ code });
+    if (examExists) {
+      return res.status(400).json({ message: "Mã đề thi đã tồn tại" });
+    }
+
+    const newExam = new Exam({
+      title,
+      description,
+      code,
+      duration,
+      questionIds
+    });
+
+    await newExam.save();
+
+    res.status(201).json({ message: "✅ Tạo đề thi thành công", exam: newExam });
+  } catch (err) {
+    res.status(500).json({ message: "Lỗi tạo đề thi", error: err.message });
+  }
+});
+
+
 
 
 // ============================================================

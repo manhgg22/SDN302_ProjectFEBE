@@ -13,6 +13,7 @@ import UserProfile from "./user/UserProfile";
 import PracticeQuiz from "./user/PracticeQuiz";
 import AdminResults from "./admin/adminResult";
 import AdminUsers from "./admin/AdminUsers"; // Import AdminUsers component
+import AdminTests from "./admin/AdminTests";
 
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
         <Route path="/user/questions" element={<PracticeQuiz />} />
         <Route path="/admin/results" element={< AdminResults/>} />
         <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/tests" element={<AdminTests />} />
+
 
 
         {/* Admin chỉ dành cho role = admin */}

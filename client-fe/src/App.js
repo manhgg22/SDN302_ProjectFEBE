@@ -14,38 +14,39 @@ import PracticeQuiz from "./user/PracticeQuiz";
 import AdminResults from "./admin/adminResult";
 import AdminUsers from "./admin/AdminUsers"; // Import AdminUsers component
 import AdminTests from "./admin/AdminTests";
-
+import MainLayout from "./layout/mainlayout/MainLayout";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
+    <Routes>
+      {/* ❌ Không nằm trong layout */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Route>
+      <Route element={<RequireAuth allowedRoles={["user"]} />}>
+        <Route path="/user" element={<UserDashboard />} />
+      </Route>
+
+      {/* ✅ Chỉ layout chính mới có Header/Footer */}
+      <Route element={<MainLayout />}>
+        <Route path="/admin/tests" element={<AdminTests />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/questions" element={<CreateQuestion />} />
+        <Route path="/admin/results" element={<AdminResults />} />
+
         <Route path="/user/quiz" element={<EnterExamCode />} />
         <Route path="/user/quiz/:examId" element={<TakeExam />} />
         <Route path="/user/results" element={<UserResults />} />
         <Route path="/user/profile" element={<UserProfile />} />
         <Route path="/user/questions" element={<PracticeQuiz />} />
-        <Route path="/admin/results" element={< AdminResults/>} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/tests" element={<AdminTests />} />
 
 
 
-        {/* Admin chỉ dành cho role = admin */}
-        <Route element={<RequireAuth allowedRoles={["admin"]} />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Route>
 
-        {/* User chỉ dành cho role = user */}
-        <Route element={<RequireAuth allowedRoles={["user"]} />}>
-          <Route path="/user" element={<UserDashboard />} />
-        </Route>
-      </Routes>
-    </Router>
+      </Route>
+    </Routes>
   );
 }
-
 export default App;

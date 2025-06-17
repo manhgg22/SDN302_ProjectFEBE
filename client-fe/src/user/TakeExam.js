@@ -27,6 +27,9 @@ import {
   SendOutlined,
   ExclamationCircleOutlined
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+
+
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -40,6 +43,7 @@ const TakeExam = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchExam = async () => {
@@ -280,20 +284,27 @@ const TakeExam = () => {
         </Row>
 
         <Card>
-          <div style={{ textAlign: 'center' }}>
-            <Space size="middle">
-              <Button type="primary" size="large" icon={<FileTextOutlined />}>
-                Xem chi tiết bài làm
-              </Button>
-              <Button size="large">
-                Làm lại bài thi
-              </Button>
-              <Button size="large">
-                Quay lại danh sách
-              </Button>
-            </Space>
-          </div>
-        </Card>
+  <div style={{ textAlign: "center" }}>
+    <Space size="middle">
+      <Button
+        type="primary"
+        size="large"
+        icon={<FileTextOutlined />}
+        onClick={() => navigate("/user/results")} // thay bằng ID thật nếu có
+      >
+        Xem kết quả bài thi
+      </Button>
+
+      <Button
+        size="large"
+        onClick={() => navigate("/user")}
+      >
+        Quay lại trang chủ
+      </Button>
+    </Space>
+  </div>
+</Card>
+
       </div>
     );
   }

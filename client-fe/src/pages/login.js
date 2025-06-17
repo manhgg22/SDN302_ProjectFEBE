@@ -91,6 +91,12 @@ function Login() {
             </Button>
           </Form.Item>
         </Form>
+
+        <div style={{ textAlign: "center", marginTop: "1rem" }}>
+          <Button type="link" onClick={() => navigate("/register")}>
+            Chưa có tài khoản? Đăng ký ngay
+          </Button>
+        </div>
       </Card>
     </div>
   );

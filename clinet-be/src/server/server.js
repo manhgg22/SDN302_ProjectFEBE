@@ -8,13 +8,13 @@ dotenv.config();
 
 const connectDB = require("../db/connectDB");
 
-// ✅ import login functions
 const { login } = require("../page/login");
 
 // Routers khác
 const adminRouter = require("../router/routerAdmin");
 const resultRouter = require("../router/routerResult");
 const examRouter = require("../router/routerAdmin");
+const registerRouter = require("../router/registerAdmin");
 
 const server = express();
 server.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -22,6 +22,8 @@ server.use(express.json());
 
 // ✅ Đăng nhập
 server.post("/login", login);
+server.use("/", registerRouter);
+
 
 // ✅ Các router khác
 server.use("/", examRouter);

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Row, Col, Card, Statistic, Button } from "antd";
-import MainLayout from "../layout/mainlayout/MainLayout";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -52,7 +51,7 @@ function UserDashboard() {
 
 
   return (
-    <MainLayout>
+   
       <div style={{ padding: "2rem" }}>
         {/* Lời chào */}
         <Title level={3}>👋 Xin chào, {username}</Title>
@@ -113,7 +112,7 @@ function UserDashboard() {
           </Col>
         </Row>
       </div>
-    </MainLayout>
+   
   );
 }
 

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { 
-  Card, 
-  Radio, 
-  Button, 
-  Typography, 
-  Space, 
-  Progress, 
-  Alert, 
+import {
+  Card,
+  Radio,
+  Button,
+  Typography,
+  Space,
+  Progress,
+  Alert,
   Divider,
   Row,
   Col,
@@ -18,9 +18,9 @@ import {
   Spin,
   message
 } from "antd";
-import { 
-  ClockCircleOutlined, 
-  FileTextOutlined, 
+import {
+  ClockCircleOutlined,
+  FileTextOutlined,
   CheckCircleOutlined,
   WarningOutlined,
   TrophyOutlined,
@@ -51,7 +51,7 @@ const TakeExam = () => {
         setLoading(true);
         const res = await axios.get(`http://localhost:9999/exam/${examId}`);
         setExam(res.data);
-        
+
         const durationInSeconds = (res.data.duration || res.data.timeLimit || 30) * 60;
         setTimeLeft(durationInSeconds);
         message.success("Đã tải đề thi thành công!");
@@ -116,7 +116,7 @@ const TakeExam = () => {
   const showSubmitConfirm = () => {
     const answeredCount = getAnsweredCount();
     const totalQuestions = exam?.questions?.length || 0;
-    
+
     confirm({
       title: 'Xác nhận nộp bài',
       icon: <ExclamationCircleOutlined />,
@@ -141,7 +141,7 @@ const TakeExam = () => {
 
   const handleSubmit = async (autoSubmit = false) => {
     setSubmitting(true);
-    
+
     const formattedAnswers = Object.entries(answers).map(([questionId, selected]) => ({
       questionId,
       selected
@@ -153,9 +153,9 @@ const TakeExam = () => {
         examId,
         answers: formattedAnswers
       });
-      
+
       setScore(res.data.score);
-      
+
       if (autoSubmit) {
         message.warning("⏰ Hết giờ! Bài thi đã được tự động nộp.");
       } else {
@@ -171,11 +171,11 @@ const TakeExam = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '50vh' 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '50vh'
       }}>
         <Spin size="large" tip="Đang tải đề thi..." />
       </div>
@@ -210,13 +210,13 @@ const TakeExam = () => {
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px' }}>
         <Card style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{ padding: '40px 20px' }}>
-            <TrophyOutlined 
-              style={{ 
-                fontSize: '80px', 
+            <TrophyOutlined
+              style={{
+                fontSize: '80px',
                 color: scoreInfo.color,
                 marginBottom: '24px',
                 display: 'block'
-              }} 
+              }}
             />
             <Title level={1} style={{ margin: '0 0 16px 0', color: scoreInfo.color }}>
               {score}/10
@@ -224,10 +224,10 @@ const TakeExam = () => {
             <Title level={2} style={{ margin: '0 0 24px 0' }}>
               Hoàn thành bài thi!
             </Title>
-            <Tag 
+            <Tag
               color={scoreInfo.status === 'error' ? 'red' : scoreInfo.status === 'warning' ? 'orange' : 'green'}
-              style={{ 
-                fontSize: '18px', 
+              style={{
+                fontSize: '18px',
                 padding: '8px 24px',
                 borderRadius: '20px',
                 marginBottom: '24px'
@@ -245,8 +245,8 @@ const TakeExam = () => {
           <Col xs={24} md={8}>
             <Card>
               <div style={{ textAlign: 'center' }}>
-                <CheckCircleOutlined 
-                  style={{ fontSize: '32px', color: '#52c41a', marginBottom: '12px' }} 
+                <CheckCircleOutlined
+                  style={{ fontSize: '32px', color: '#52c41a', marginBottom: '12px' }}
                 />
                 <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#262626' }}>
                   {answeredCount}/{totalQuestions}
@@ -258,8 +258,8 @@ const TakeExam = () => {
           <Col xs={24} md={8}>
             <Card>
               <div style={{ textAlign: 'center' }}>
-                <ClockCircleOutlined 
-                  style={{ fontSize: '32px', color: '#1890ff', marginBottom: '12px' }} 
+                <ClockCircleOutlined
+                  style={{ fontSize: '32px', color: '#1890ff', marginBottom: '12px' }}
                 />
                 <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#262626' }}>
                   {exam?.duration || exam?.timeLimit || 0}
@@ -271,8 +271,8 @@ const TakeExam = () => {
           <Col xs={24} md={8}>
             <Card>
               <div style={{ textAlign: 'center' }}>
-                <TrophyOutlined 
-                  style={{ fontSize: '32px', color: scoreInfo.color, marginBottom: '12px' }} 
+                <TrophyOutlined
+                  style={{ fontSize: '32px', color: scoreInfo.color, marginBottom: '12px' }}
                 />
                 <div style={{ fontSize: '24px', fontWeight: 'bold', color: scoreInfo.color }}>
                   {percentage}%
@@ -284,26 +284,26 @@ const TakeExam = () => {
         </Row>
 
         <Card>
-  <div style={{ textAlign: "center" }}>
-    <Space size="middle">
-      <Button
-        type="primary"
-        size="large"
-        icon={<FileTextOutlined />}
-        onClick={() => navigate("/user/results")} // thay bằng ID thật nếu có
-      >
-        Xem kết quả bài thi
-      </Button>
+          <div style={{ textAlign: "center" }}>
+            <Space size="middle">
+              <Button
+                type="primary"
+                size="large"
+                icon={<FileTextOutlined />}
+                onClick={() => navigate("/user/results")} // thay bằng ID thật nếu có
+              >
+                Xem kết quả bài thi
+              </Button>
 
-      <Button
-        size="large"
-        onClick={() => navigate("/user")}
-      >
-        Quay lại trang chủ
-      </Button>
-    </Space>
-  </div>
-</Card>
+              <Button
+                size="large"
+                onClick={() => navigate("/user")}
+              >
+                Quay lại trang chủ
+              </Button>
+            </Space>
+          </div>
+        </Card>
 
       </div>
     );
@@ -326,8 +326,8 @@ const TakeExam = () => {
           </Col>
           <Col>
             <Space direction="vertical" align="end" size={0}>
-              <Tag 
-                color={getTimeColor()} 
+              <Tag
+                color={getTimeColor()}
                 style={{ fontSize: '16px', padding: '8px 16px' }}
               >
                 <ClockCircleOutlined /> {formatTime(timeLeft)}
@@ -346,8 +346,8 @@ const TakeExam = () => {
           <Col span={12}>
             <div>
               <Text strong>Tiến độ thời gian:</Text>
-              <Progress 
-                percent={getProgressPercent()} 
+              <Progress
+                percent={getProgressPercent()}
                 status={getTimeColor() === 'error' ? 'exception' : 'active'}
                 strokeColor={getTimeColor() === 'error' ? '#ff4d4f' : '#1890ff'}
               />
@@ -356,7 +356,7 @@ const TakeExam = () => {
           <Col span={12}>
             <div>
               <Text strong>Câu đã trả lời:</Text>
-              <Progress 
+              <Progress
                 percent={Math.round((getAnsweredCount() / exam.questions.length) * 100)}
                 format={() => `${getAnsweredCount()}/${exam.questions.length}`}
               />
@@ -379,7 +379,7 @@ const TakeExam = () => {
       {/* Questions */}
       <div style={{ marginBottom: 24 }}>
         {exam.questions.map((question, index) => (
-          <Card 
+          <Card
             key={question._id}
             style={{ marginBottom: 16 }}
             title={
@@ -399,10 +399,10 @@ const TakeExam = () => {
             >
               <Space direction="vertical" style={{ width: '100%' }}>
                 {question.options.map((option, optionIndex) => (
-                  <Radio 
-                    key={optionIndex} 
+                  <Radio
+                    key={optionIndex}
                     value={optionIndex}
-                    style={{ 
+                    style={{
                       padding: '8px 12px',
                       border: '1px solid #f0f0f0',
                       borderRadius: '6px',

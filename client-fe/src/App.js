@@ -15,6 +15,9 @@ import AdminResults from "./admin/adminResult";
 import AdminUsers from "./admin/AdminUsers"; // Import AdminUsers component
 import AdminTests from "./admin/AdminTests";
 import MainLayout from "./layout/mainlayout/MainLayout";
+import "antd/dist/reset.css"; 
+
+
 
 function App() {
   return (
@@ -36,6 +39,7 @@ function App() {
         <Route path="/admin/questions" element={<CreateQuestion />} />
         <Route path="/admin/results" element={<AdminResults />} />
          <Route path="/admin" element={<AdminDashboard />} />
+
 
         <Route path="/user/quiz" element={<EnterExamCode />} />
         <Route path="/user/quiz/:examId" element={<TakeExam />} />

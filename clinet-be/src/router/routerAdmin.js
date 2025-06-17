@@ -78,6 +78,42 @@ router.post("/questions", async (req, res) => {
   }
 });
 /**
+ * @route PUT /admin/questions/:id
+ * @desc Cập nhật một câu hỏi
+ */
+router.put("/questions/:id", async (req, res) => {
+  try {
+    const { content, options, correctAnswer, explanation, subject, level } = req.body;
+
+    const updated = await Question.findByIdAndUpdate(
+      req.params.id,
+      { content, options, correctAnswer, explanation, subject, level },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy câu hỏi" });
+
+    res.status(200).json({ message: "✅ Cập nhật câu hỏi thành công", question: updated });
+  } catch (err) {
+    res.status(500).json({ message: "Lỗi cập nhật câu hỏi", error: err.message });
+  }
+});
+/**
+ * @route DELETE /admin/questions/:id
+ * @desc Xóa một câu hỏi
+ */
+router.delete("/questions/:id", async (req, res) => {
+  try {
+    const deleted = await Question.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Không tìm thấy câu hỏi" });
+
+    res.status(200).json({ message: "✅ Đã xóa câu hỏi", id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ message: "Lỗi khi xóa câu hỏi", error: err.message });
+  }
+});
+
+/**
  * @route GET /admin/questions/random?count=5
  * @desc Trả về ngẫu nhiên X câu hỏi
  */

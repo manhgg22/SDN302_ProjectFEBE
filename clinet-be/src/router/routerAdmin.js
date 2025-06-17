@@ -162,6 +162,18 @@ router.post("/tests", verifyToken, checkRole("admin"), async (req, res) => {
     res.status(500).json({ message: "Lỗi tạo đề thi", error: err.message });
   }
 });
+/**
+ * @route GET /admin/tests
+ * @desc Lấy danh sách tất cả đề thi
+ */
+router.get("/tests", async (req, res) => {
+  try {
+    const exams = await Exam.find().sort({ createdAt: -1 });
+    res.status(200).json(exams);
+  } catch (err) {
+    res.status(500).json({ message: "Lỗi lấy danh sách đề thi" });
+  }
+});
 
 
 

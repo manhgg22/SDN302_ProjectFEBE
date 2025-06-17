@@ -352,7 +352,149 @@ router.get("/results", async (req, res) => {
   }
 });
 
+// Thêm các route này vào file admin.js của bạn
 
+/**
+ * @route PUT /admin/tests/:id
+ * @desc Cập nhật đề thi
+ */
+router.put("/tests/:id", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const { title, description, code, duration, questionIds } = req.body;
+
+    if (!title || !code || !Array.isArray(questionIds) || questionIds.length === 0) {
+      return res.status(400).json({ message: "Thiếu dữ liệu hoặc sai định dạng" });
+    }
+
+    // Kiểm tra mã đề thi có trùng với đề khác không (trừ đề hiện tại)
+    const examExists = await Exam.findOne({ code, _id: { $ne: req.params.id } });
+    if (examExists) {
+      return res.status(400).json({ message: "Mã đề thi đã tồn tại" });
+    }
+
+    const updatedExam = await Exam.findByIdAndUpdate(
+      req.params.id,
+      { title, description, code, duration, questionIds },
+      { new: true }
+    );
+
+    if (!updatedExam) {
+      return res.status(404).json({ message: "Không tìm thấy đề thi" });
+    }
+
+    res.status(200).json({ message: "✅ Cập nhật đề thi thành công", exam: updatedExam });
+  } catch (err) {
+    console.error("❌ Lỗi cập nhật đề thi:", err);
+    res.status(500).json({ message: "Lỗi cập nhật đề thi", error: err.message });
+  }
+});
+
+/**
+ * @route DELETE /admin/tests/:id
+ * @desc Xóa đề thi
+ */
+router.delete("/tests/:id", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    // Kiểm tra xem có kết quả nào liên quan đến đề thi này không
+    const hasResults = await Result.findOne({ examId: req.params.id });
+    if (hasResults) {
+      return res.status(400).json({ 
+        message: "Không thể xóa đề thi đã có học sinh làm bài" 
+      });
+    }
+
+    const deletedExam = await Exam.findByIdAndDelete(req.params.id);
+    if (!deletedExam) {
+      return res.status(404).json({ message: "Không tìm thấy đề thi" });
+    }
+
+    res.status(200).json({ 
+      message: "✅ Đã xóa đề thi thành công", 
+      examId: req.params.id 
+    });
+  } catch (err) {
+    console.error("❌ Lỗi xóa đề thi:", err);
+    res.status(500).json({ message: "Lỗi xóa đề thi", error: err.message });
+  }
+});
+
+/**
+ * @route GET /admin/tests/:id
+ * @desc Lấy chi tiết một đề thi để chỉnh sửa
+ */
+router.get("/tests/:id", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const exam = await Exam.findById(req.params.id);
+    if (!exam) {
+      return res.status(404).json({ message: "Không tìm thấy đề thi" });
+    }
+
+    res.status(200).json(exam);
+  } catch (err) {
+    console.error("❌ Lỗi lấy chi tiết đề thi:", err);
+    res.status(500).json({ message: "Lỗi lấy chi tiết đề thi", error: err.message });
+  }
+});
+
+/**
+ * @route GET /admin/questions/search
+ * @desc Tìm kiếm câu hỏi theo từ khóa, môn học, độ khó
+ */
+router.get("/questions/search", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const { keyword, subject, level, page = 1, limit = 20 } = req.query;
+    
+    let query = {};
+    
+    if (keyword) {
+      query.content = { $regex: keyword, $options: 'i' };
+    }
+    
+    if (subject) {
+      query.subject = subject;
+    }
+    
+    if (level) {
+      query.level = level;
+    }
+
+    const skip = (page - 1) * limit;
+    
+    const questions = await Question.find(query)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 });
+
+    const total = await Question.countDocuments(query);
+
+    res.status(200).json({
+      questions,
+      total,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalPages: Math.ceil(total / limit)
+    });
+  } catch (err) {
+    console.error("❌ Lỗi tìm kiếm câu hỏi:", err);
+    res.status(500).json({ message: "Lỗi tìm kiếm câu hỏi", error: err.message });
+  }
+});
+
+/**
+ * @route GET /admin/questions/subjects
+ * @desc Lấy danh sách môn học và độ khó để filter
+ */
+router.get("/questions/subjects", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const subjects = await Question.distinct("subject");
+    const levels = await Question.distinct("level");
+    
+    res.status(200).json({ subjects, levels });
+  } catch (err) {
+    console.error("❌ Lỗi lấy danh sách môn học:", err);
+    res.status(500).json({ message: "Lỗi lấy danh sách môn học", error: err.message });
+  }
+});
 
 
 

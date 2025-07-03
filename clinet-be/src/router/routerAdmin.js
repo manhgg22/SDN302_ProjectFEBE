@@ -55,21 +55,24 @@ router.patch("/user/:id", verifyToken, checkRole("admin"), async (req, res) => {
 });
 router.post("/questions", async (req, res) => {
   try {
-    const { content, options, correctAnswer, explanation, subject, level } = req.body;
+    const { content, options, correctAnswer, subject, level, duration } = req.body;
+
+const newQuestion = new Question({
+  content,
+  options,
+  correctAnswer,
+  subject,
+  level,
+  duration,
+  createdAt: new Date()
+});
+
 
     if (!content || !Array.isArray(options) || options.length < 2) {
       return res.status(400).json({ message: "Thiếu dữ liệu hoặc sai định dạng" });
     }
 
-    const newQuestion = new Question({
-      content,
-      options,
-      correctAnswer,
-      explanation,
-      subject,
-      level,
-      createdAt: new Date()
-    });
+   
 
     await newQuestion.save();
     res.status(201).json({ message: "✅ Tạo câu hỏi thành công", question: newQuestion });

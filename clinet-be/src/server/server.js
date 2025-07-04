@@ -3,6 +3,9 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const uploadRoutes = require("../router/upload");
+const path = require("path");
+
 
 dotenv.config();
 
@@ -30,6 +33,8 @@ server.use("/", examRouter);
 server.use("/", resultRouter);
 server.use("/admin", adminRouter);
 server.use("/result", resultRouter);
+server.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+server.use("/upload", uploadRoutes);
 
 // ✅ Swagger
 const swaggerSpec = swaggerJsDoc({

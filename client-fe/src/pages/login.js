@@ -3,7 +3,7 @@ import { Form, Input, Button, Typography, Alert, Card } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 // import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import axios from '../axiosInstance'; 
+import axios from '../axiosInstance';
 
 const { Title } = Typography;
 
@@ -23,23 +23,23 @@ function Login() {
   }, [navigate]);
 
   const onFinish = async (values) => {
-  setError("");
-  setLoading(true);
-  try {
-    const res = await axios.post("/login", values);
-    const { token, role, userId } = res.data;
+    setError("");
+    setLoading(true);
+    try {
+      const res = await axios.post("/login", values);
+      const { token, role, userId } = res.data;
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
-    localStorage.setItem("userId", userId);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("userId", userId);
 
-    navigate(role === "admin" ? "/admin" : "/user");
-  } catch (err) {
-    setError(err.response?.data?.message || "Đăng nhập thất bại");
-  } finally {
-    setLoading(false);
-  }
-};
+      navigate(role === "admin" ? "/admin" : "/user");
+    } catch (err) {
+      setError(err.response?.data?.message || "Đăng nhập thất bại");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -91,9 +91,9 @@ function Login() {
           </Form.Item>
 
           <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
-  Đăng nhập
-</Button>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              Đăng nhập
+            </Button>
 
           </Form.Item>
         </Form>
@@ -102,7 +102,12 @@ function Login() {
           <Button type="link" onClick={() => navigate("/register")}>
             Chưa có tài khoản? Đăng ký ngay
           </Button>
+          <br />
+          <Button type="link" onClick={() => navigate("/forgot-password")}>
+            Quên mật khẩu?
+          </Button>
         </div>
+
       </Card>
     </div>
   );

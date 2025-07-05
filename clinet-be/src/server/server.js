@@ -18,6 +18,8 @@ const adminRouter = require("../router/routerAdmin");
 const resultRouter = require("../router/routerResult");
 const examRouter = require("../router/routerAdmin");
 const registerRouter = require("../router/registerAdmin");
+const forgetPasswordRouter = require("../router/forgetPassword");
+
 
 const server = express();
 server.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -35,6 +37,8 @@ server.use("/admin", adminRouter);
 server.use("/result", resultRouter);
 server.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 server.use("/upload", uploadRoutes);
+server.use("/api", forgetPasswordRouter);
+
 
 // ✅ Swagger
 const swaggerSpec = swaggerJsDoc({
